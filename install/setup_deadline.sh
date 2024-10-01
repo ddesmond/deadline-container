@@ -8,6 +8,7 @@ else
   echo "Downloading Deadline installer"
   installers=/tmp/deadline10_installers
   destination=/opt/Thinkbox/Deadline10
+
   mkdir -p $installers
   # download installer outisde of the repo
   echo "Downloaded Deadline installer."
