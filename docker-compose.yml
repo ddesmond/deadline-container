@@ -1,0 +1,80 @@
+version: "3.4"
+
+services:
+  mongodb:
+    image: mongo:5.0.1
+    container_name: mongodb
+    ports:
+        - target: 27017
+          published: 27017
+          protocol: tcp
+          mode: host
+    networks:
+      - net
+    volumes:
+      - type: volume
+        source: db
+        target: /data/db
+    restart: always
+#
+  d10repo:
+    build:
+      context: d10repo
+    image: mono:latest
+    container_name: d10repo
+    depends_on:
+      - mongodb
+    networks:
+      - net
+    volumes:
+      - './install:/tmp/'
+      - './repository:/deadline10/'
+    restart: no
+    command: sh /tmp/setup_deadline.sh
+
+  d10client:
+    build:
+      context: d10repo
+    image: mono:latest
+    container_name: d10client
+    depends_on:
+      - mongodb
+    networks:
+      - net
+    volumes:
+      - './install:/tmp/'
+      - './repository:/deadline10/'
+    restart: no
+    command: sh /tmp/setup_client.sh
+
+  d10webservice:
+    build:
+      context: webservice
+    image: mono:latest
+    container_name: d10webservice
+    depends_on:
+      - d10repo
+      - d10client
+    ports:
+        - target: 8082
+          published: 8082
+          protocol: tcp
+          mode: host
+    networks:
+      - net
+    volumes:
+      - './repository:/deadline10/'
+      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+      - './install:/tmp/'
+    restart: always
+    command: sh /tmp/run_webservice.sh
+
+networks:
+  net:
+    internal: false
+    driver: bridge
+    attachable: true
+
+volumes:
+  repository:
+  db:
