@@ -23,14 +23,14 @@ else
   # download installer outisde of the repo
 
   # permissions
-  chmod +x /opt/setup/Deadline-10.3.2.1-linux-installers.tar
+  chmod +x /opt/setup/Deadline.tar
   # create repository directories
   mkdir -p $installers
   mkdir -p destination
 
   # permissions
   # extract the installer
-  tar -xvf /opt/setup/Deadline-10.3.2.1-linux-installers.tar -C $installers
+  tar -xvf /opt/setup/Deadline.tar -C $installers
   echo "Deadline installer files extracted to $installers"
   chmod +x $installers/*
   echo "Installing Deadline 10 repository from $installers"

@@ -18,7 +18,7 @@ else
     # permissions
   # extract the installer
   mkdir -p $installers
-  tar -xvf /opt/setup/Deadline-10.3.2.1-linux-installers.tar -C $installers
+  tar -xvf /opt/setup/Deadline.tar -C $installers
   echo "Deadline client installer files extracted to $installers"
   chmod +x $installers/*
   echo "Installing Deadline 10 client files from $installers"

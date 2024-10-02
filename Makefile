@@ -1,4 +1,5 @@
 dev:
+	mkdir -p db repository
 	docker compose up
 
 setup:
@@ -7,7 +8,7 @@ setup:
 down:
 	docker compose down
 
-cleanrepo:
+repoclean:
 	sudo rm -rf ./repository/client
 	sudo rm -rf ./repository/repository
 
@@ -19,3 +20,6 @@ clean:
 
 app:
 	sh install/setup_deadline-web-app.sh
+
+download:
+	sh install/download_deadline.sh
