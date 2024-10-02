@@ -76,8 +76,8 @@ services:
       d10mongodb:
         condition: service_healthy
     ports:
-        - target: 8082
-          published: 8082
+        - target: 8081
+          published: 8081
           protocol: tcp
           mode: host
     networks:
@@ -93,35 +93,35 @@ services:
     restart: always
     command: sh /opt/setup/run_webservice.sh
 
-#  d10rcservice:
-#    build:
-#      context: client
-#    image: mono:latest
-#    container_name: d10-rcsservice
-#    depends_on:
-#      d10repo:
-#        condition: service_completed_successfully
-#      d10client:
-#        condition: service_completed_successfully
-#      d10mongodb:
-#        condition: service_healthy
-#    ports:
-#        - target: 8081
-#          published: 8081
-#          protocol: tcp
-#          mode: host
-#    networks:
-#      - net
-#    volumes:
-#      - type: bind
-#        source: ./install
-#        target: /opt/setup/
-#      - type: bind
-#        source: ./repository
-#        target: /deadline10/
-#      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
-#    restart: always
-#    command: sh /opt/setup/run_rcsservice.sh
+  d10rcs:
+    build:
+      context: client
+    image: mono:latest
+    container_name: d10-rcs
+    depends_on:
+      d10repo:
+        condition: service_completed_successfully
+      d10client:
+        condition: service_completed_successfully
+      d10mongodb:
+        condition: service_healthy
+    ports:
+        - target: 8080
+          published: 8080
+          protocol: tcp
+          mode: host
+    networks:
+      - net
+    volumes:
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
+      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+    restart: always
+    command: sh /opt/setup/run_rcsservice.sh
 
 networks:
   net:
