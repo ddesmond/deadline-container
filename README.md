@@ -43,3 +43,6 @@ Add this entry to your hosts file:
 ```bash
 127.0.0.1       d10mongodb d10client d10rcs d10repo d10webservice deadline-web-app-backend deadline-web-app-frontend
 ```
+
+
+You can set a nginx instace to route the traffic to the Deadline Webservice and Deadline Monitor WebUI.
