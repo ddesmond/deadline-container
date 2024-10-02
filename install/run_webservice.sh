@@ -5,7 +5,7 @@ mono --version
 export DEADLINE_PATH=/deadline10/client
 
 if [ -d /deadline10/client ]; then
-  cd /dealine10/client/bin
+  cd /deadline10/client/bin
   echo "Deadline10 Webservice is Starting"
   /deadline10/client/bin/deadlinewebservice.exe
 else
