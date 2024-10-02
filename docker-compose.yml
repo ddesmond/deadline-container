@@ -140,7 +140,7 @@ services:
     networks:
       - net
     environment:
-        OPENAI_API_KEY: ''
+        OPENAI_API_KEY: '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'
         WEB_SERVICE_IP: d10webservice
         WEB_SERVICE_PORT: 8081
     ports:
