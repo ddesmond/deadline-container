@@ -130,7 +130,7 @@ services:
 
   deadline-web-app-backend:
     build:
-      context: deadline-web-app-backend
+      context: ./deadline-web-app-backend
       dockerfile: Dockerfile
     container_name: deadline-web-app-backend
     ports:
@@ -146,27 +146,21 @@ services:
       - net
     restart: always
 #
-#  deadline-web-app-frontend:
-#    build:
-#      context: deadline-web-app-frontend
-#      dockerfile: Dockerfile
-#      args:
-#        NEXT_PUBLIC_BACKEND_URL: wss://deadline-web-app-backend
-#    container_name: deadline-web-app-frontend
-#    healthcheck:
-#      test: curl -i http://0.0.0.0:2000 || exit 1
-#      interval: 2s
-#      retries: 100
-#      start_period: 2s
-#      timeout: 5s
-#    depends_on:
-#      d10webservice:
-#        condition: service_healthy
-#    ports:
-#      - "2000:80"
-#    networks:
-#      - net
-#    restart: always
+  deadline-web-app-frontend:
+    build:
+      context: deadline-web-app-frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_BACKEND_URL: http://localhost:1000
+    container_name: deadline-web-app-frontend
+    depends_on:
+      d10webservice:
+        condition: service_healthy
+    ports:
+      - "2000:80"
+    networks:
+      - net
+    restart: always
 
 networks:
   net:
