@@ -65,13 +65,12 @@ services:
   d10webservice:
     build:
       context: client
-      privileged: true
     image: mono:latest
     container_name: d10-webservice
     healthcheck:
       test: curl -i http://0.0.0.0:8081 || exit 1
       interval: 2s
-      retries: 100
+      retries: 20
       start_period: 2s
       timeout: 5s
     depends_on:
@@ -133,11 +132,9 @@ services:
     build:
       context: deadline-web-app-backend
       dockerfile: Dockerfile
+    container_name: deadline-web-app-backend
     ports:
-      - target: 1080
-        published: 80
-        protocol: tcp
-        mode: host
+      - "1000:80"
     environment:
       OPENAI_API_KEY: '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'
       WEB_SERVICE_IP: d10webservice
@@ -147,18 +144,29 @@ services:
         condition: service_healthy
     networks:
       - net
-
-
-  deadline-web-app-frontend:
-    build:
-      context: deadline-web-app-frontend
-      dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_BACKEND_URL: wss://deadline-web-app-frontend
-    ports:
-      - "2000:80"
-    networks:
-      - net
+    restart: always
+#
+#  deadline-web-app-frontend:
+#    build:
+#      context: deadline-web-app-frontend
+#      dockerfile: Dockerfile
+#      args:
+#        NEXT_PUBLIC_BACKEND_URL: wss://deadline-web-app-backend
+#    container_name: deadline-web-app-frontend
+#    healthcheck:
+#      test: curl -i http://0.0.0.0:2000 || exit 1
+#      interval: 2s
+#      retries: 100
+#      start_period: 2s
+#      timeout: 5s
+#    depends_on:
+#      d10webservice:
+#        condition: service_healthy
+#    ports:
+#      - "2000:80"
+#    networks:
+#      - net
+#    restart: always
 
 networks:
   net:
