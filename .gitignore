@@ -11,6 +11,8 @@ __pycache__/
 # Distribution / packaging
 .Python
 .idea/
+repository/client*
+repository/repository*
 db/
 deadline-web-app/
 deadline-web-app-frontend/
