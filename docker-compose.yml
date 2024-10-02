@@ -131,36 +131,34 @@ services:
 
   deadline-web-app-backend:
     build:
-      context: repository
-    image: python:3.11-slim
-    container_name: deadline-web-app-backend
-    depends_on:
-      d10webservice:
-        condition: service_healthy
-    networks:
-      - net
-    environment:
-        OPENAI_API_KEY: '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'
-        WEB_SERVICE_IP: d10webservice
-        WEB_SERVICE_PORT: 8081
+      context: deadline-web-app-backend
+      dockerfile: Dockerfile
     ports:
       - target: 1080
         published: 80
         protocol: tcp
         mode: host
-    volumes:
-      - type: bind
-        source: ./install
-        target: /opt/setup/
-      - type: bind
-        source: ./repository
-        target: /deadline10/
-      - type: bind
-        source: ./deadline-web-app-backend
-        target: /app/
-    working_dir: /
-    restart: always
-    command: sh /opt/setup/run_app_backend.sh
+    environment:
+      OPENAI_API_KEY: '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'
+      WEB_SERVICE_IP: d10webservice
+      WEB_SERVICE_PORT: 8081
+    depends_on:
+      d10webservice:
+        condition: service_healthy
+    networks:
+      - net
+
+
+  deadline-web-app-frontend:
+    build:
+      context: deadline-web-app-frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_BACKEND_URL: wss://deadline-web-app-frontend
+    ports:
+      - "2000:80"
+    networks:
+      - net
 
 networks:
   net:
