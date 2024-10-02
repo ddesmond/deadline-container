@@ -1,9 +1,11 @@
 version: "3.4"
 
 services:
-  mongodb:
+  d10mongodb:
     image: mongo:5.0.1
-    container_name: mongodb
+    container_name: d10-mongodb
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
     ports:
         - target: 27017
           published: 27017
@@ -12,49 +14,63 @@ services:
     networks:
       - net
     volumes:
-      - type: volume
-        source: db
-        target: /data/db
+      - './db:/data/db'
     restart: always
 #
   d10repo:
     build:
-      context: d10repo
+      context: repository
     image: mono:latest
-    container_name: d10repo
+    container_name: d10-repo
     depends_on:
-      - mongodb
+      d10mongodb:
+        condition: service_healthy
     networks:
       - net
     volumes:
-      - './install:/tmp/'
-      - './repository:/deadline10/'
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
     restart: no
-    command: sh /tmp/setup_deadline.sh
+    command: sh /opt/setup/setup_deadline.sh
 
   d10client:
     build:
-      context: d10repo
+      context: client
     image: mono:latest
-    container_name: d10client
+    container_name: d10-client
     depends_on:
-      - mongodb
+      d10repo:
+        condition: service_completed_successfully
+      d10mongodb:
+        condition: service_healthy
     networks:
       - net
     volumes:
-      - './install:/tmp/'
-      - './repository:/deadline10/'
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
     restart: no
-    command: sh /tmp/setup_client.sh
-
+    command: sh /opt/setup/setup_client.sh
+#
   d10webservice:
     build:
-      context: webservice
+      context: client
     image: mono:latest
-    container_name: d10webservice
+    container_name: d10-webservice
     depends_on:
-      - d10repo
-      - d10client
+      d10repo:
+        condition: service_completed_successfully
+      d10client:
+        condition: service_completed_successfully
+      d10mongodb:
+        condition: service_healthy
     ports:
         - target: 8082
           published: 8082
@@ -63,11 +79,45 @@ services:
     networks:
       - net
     volumes:
-      - './repository:/deadline10/'
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
       - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
-      - './install:/tmp/'
     restart: always
-    command: sh /tmp/run_webservice.sh
+    command: sh /opt/setup/run_webservice.sh
+
+  d10rcservice:
+    build:
+      context: client
+    image: mono:latest
+    container_name: d10-rcsservice
+    depends_on:
+      d10repo:
+        condition: service_completed_successfully
+      d10client:
+        condition: service_completed_successfully
+      d10mongodb:
+        condition: service_healthy
+    ports:
+        - target: 8081
+          published: 8081
+          protocol: tcp
+          mode: host
+    networks:
+      - net
+    volumes:
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
+      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+    restart: always
+    command: sh /opt/setup/run_rcsservice.sh
 
 networks:
   net:

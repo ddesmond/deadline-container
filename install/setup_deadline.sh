@@ -1,9 +1,15 @@
 #!/bin/sh
-echo "Checking Deadline"
+echo "----------------------------------------------------"
+echo "Checking up: Deadline10 Repository"
+echo "----------------------------------------------------"
 
-if [ -d /deadline10/repository ]; then
-  echo "Repository exists. Please remove the old repository to install new one. Thanks!"
 
+if [ -f /deadline10/repository/settings/connection.ini ]; then
+  echo ""
+  echo "Repository exists. Dispatching Deadline Client Check"
+  echo "If you want to reinstall-rerun Repository installer please remove the old repository to install new one."
+  echo "----------------------------------------------------"
+  exit 0
 else
   echo "Downloading Deadline installer"
   installers=/tmp/deadline10_installers
@@ -13,7 +19,7 @@ else
   # download installer outisde of the repo
   echo "Downloaded Deadline installer."
   # permissions
-  chmod +x /tmp/Deadline-10.3.2.1-linux-installers.tar
+  chmod +x /opt/setup/Deadline-10.3.2.1-linux-installers.tar
 
 
   # create repository directories
@@ -22,7 +28,7 @@ else
 
   # permissions
   # extract the installer
-  tar -xvf /tmp/Deadline-10.3.2.1-linux-installers.tar -C $installers
+  tar -xvf /opt/setup/Deadline-10.3.2.1-linux-installers.tar -C $installers
   echo "Deadline installer files extracted to $installers"
   chmod +x $installers/DeadlineRepository-10.3.2.1-linux-x64-installer.run
   echo "Installing Deadline 10 repository from $installers"
@@ -38,7 +44,7 @@ else
         --dbhost mongodb \
         --dbport 27017
 
+  cp /opt/setup/connection.ini /deadline10/repository/settings/connection.ini
+  echo "Done."
+  exit 0
 fi
-cp /tmp/connection.ini /deadline10/repository/settings/connection.ini
-echo "Done."
-exit 0
