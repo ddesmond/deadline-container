@@ -29,3 +29,11 @@ Containers have dependencies, so they will be started in the following order:
 4. Webservice - checks if webservice-client files  are already installed, if not it waits until the files are there
 5. RCS - checks if RCS-client files are already installed, if not it waits until the files are there
 
+Deadline Webservice container open file desriptors error - inotify error: If you get an error like this then set your host limits to a higher value:
+Check your host machine ulimits and set them higher. Use the following snippet which was tested OK on ubuntu systems.
+Execute the following commands in the terminal of the host machine where docker compose runs:
+```bash
+```
+echo fs.inotify.max_user_instances=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+```
+
