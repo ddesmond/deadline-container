@@ -11,6 +11,9 @@ __pycache__/
 # Distribution / packaging
 .Python
 db/
+deadline-web-app/
+deadline-web-app-frontend/
+deadline-web-app-backend/
 env/
 build/
 develop-eggs/

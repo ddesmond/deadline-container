@@ -1,10 +1,11 @@
 #!/bin/sh
-hostname deadline-webservice
-mono --version
+# run pre_install.sh script
+
+sudo ulimit -u unlimited
 
 export DEADLINE_PATH=/deadline10/client
 
-if [ -d /deadline10/client ]; then
+if [ -f /deadline10/client/bin/deadlinewebservice.exe ]; then
   cd /deadline10/client/bin
   echo "Deadline10 Webservice is Starting"
   /deadline10/client/bin/deadlinewebservice.exe
