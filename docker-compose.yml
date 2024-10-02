@@ -68,6 +68,12 @@ services:
       privileged: true
     image: mono:latest
     container_name: d10-webservice
+    healthcheck:
+      test: curl -i http://0.0.0.0:8081 || exit 1
+      interval: 2s
+      retries: 100
+      start_period: 2s
+      timeout: 5s
     depends_on:
       d10repo:
         condition: service_completed_successfully
@@ -122,6 +128,39 @@ services:
       - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
     restart: always
     command: sh /opt/setup/run_rcsservice.sh
+
+  deadline-web-app-backend:
+    build:
+      context: repository
+    image: python:3.11-slim
+    container_name: deadline-web-app-backend
+    depends_on:
+      d10webservice:
+        condition: service_healthy
+    networks:
+      - net
+    environment:
+        OPENAI_API_KEY: ''
+        WEB_SERVICE_IP: d10webservice
+        WEB_SERVICE_PORT: 8081
+    ports:
+      - target: 1080
+        published: 80
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
+      - type: bind
+        source: ./deadline-web-app-backend
+        target: /app/
+    working_dir: /
+    restart: always
+    command: sh /opt/setup/run_app_backend.sh
 
 networks:
   net:
