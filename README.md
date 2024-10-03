@@ -9,13 +9,14 @@ This repo contains all necessary files to build and run Deadline 10 docker conta
 - Deadline MongDB - 1 container, port 27017, standard MongoDB setup, v 5.0.1
 - Deadline Repository installer - 1 container, standard Deadline setup, no ssl
 - Deadline Client installer - 1 container, standard Deadline Client setup
-- Deadline Webservice - 1 container, standard Deadline Webservice setup, port 8082
-- Deadline RCS - 1 container, standard Deadline RCS setup, port 8081 
-- Deadline Asset Server - 1 container, standard Deadline Asset Server setup, port 8081 - NOT IMPLEMENTED
-- Deadline Balancer - 1 container, standard Deadline Balancer setup, port 8081 - NOT IMPLEMENTED
-- Deadline Pulse - 1 container, standard Deadline Pulse setup, port 8081 - NOT IMPLEMENTED
+- Deadline Webservice - 1 container, standard Deadline Webservice setup, port 8081
+- Deadline RCS - 1 container, standard Deadline RCS setup, port 8080
+- Deadline Asset Server - 1 container, NOT IMPLEMENTED
+- Deadline Balancer - 1 container,  NOT IMPLEMENTED
+- Deadline Pulse - 1 container, NOT IMPLEMENTED
 - Deadline Monitor WebUI App Frontend - 1 container, standard Deadline Monitor WebUI app setup
 - Deadline Monitor WebUI App Backend - 1 container, standard Deadline Monitor Backend app setup
+- Deadline Worker - 1 container, NOT IMPLEMENTED
 
 ### How to run
 Clone the repo and download the Deadline installer from the official website. Place the installer in the install directory of the project. 
