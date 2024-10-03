@@ -1,0 +1,28 @@
+services:
+  d10worker:
+    build:
+      context: repository
+    image: mono:latest
+    container_name: d10-worker
+    networks:
+      - net
+    volumes:
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
+      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+    restart: on-failure
+    command: sh /opt/setup/run_worker.sh
+
+networks:
+  net:
+    internal: false
+    driver: bridge
+    attachable: true
+
+volumes:
+  repository:
+  db:
