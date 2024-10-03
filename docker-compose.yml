@@ -184,7 +184,7 @@ services:
         NEXT_PUBLIC_BACKEND_URL: http://deadline-web-app-backend:1000
     container_name: deadline-web-app-frontend
     healthcheck:
-      test: curl -i http://0.0.0.0:2000 || exit 1
+      test: curl -i http://localhost:2000 || exit 1
       interval: 2s
       retries: 20
       start_period: 2s
