@@ -16,7 +16,7 @@ This repo contains all necessary files to build and run Deadline 10 docker conta
 - Deadline Pulse - 1 container, NOT IMPLEMENTED
 - Deadline Monitor WebUI App Frontend - 1 container, standard Deadline Monitor WebUI app setup
 - Deadline Monitor WebUI App Backend - 1 container, standard Deadline Monitor Backend app setup
-- Deadline Worker - 1 container, NOT IMPLEMENTED
+- Deadline Worker - 1 container, launched from separate docker-compose.worker.yml file, standard Deadline Worker no gui setup
 
 ### How to run
 Clone the repo and download the Deadline installer from the official website. Place the installer in the install directory of the project. 
@@ -40,6 +40,7 @@ Containers have dependencies, so they will be started in the following order:
 4. Webservice - checks if webservice-client files  are already installed, if not it waits until the files are there
 5. RCS - checks if RCS-client files are already installed, if not it waits until the files are there
 6. Monitor WebUI App Backend and Frontend
+7. Separate Deadline worker-slave container - launch from docker-compose.worker.yml
 ```
 Deadline Webservice container open file desriptors error - inotify error: If you get an error like this then set your host limits to a higher value:
 Check your host machine ulimits and set them higher. Use the following snippet which was tested OK on ubuntu systems.
