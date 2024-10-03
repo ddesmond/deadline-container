@@ -1,4 +1,22 @@
 services:
+  traffic-nginx:
+    image: 'docker.io/jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    container_name: d10-nginx
+    healthcheck:
+      test: [ "CMD", "/usr/bin/check-health" ]
+      interval: 10s
+      timeout: 3s
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - net
+
   d10mongodb:
     image: mongo:5.0.1
     container_name: d10-mongodb
@@ -97,7 +115,7 @@ services:
       - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
     restart: always
     command: sh /opt/setup/run_webservice.sh
-
+#
   d10rcs:
     build:
       context: client
@@ -115,6 +133,10 @@ services:
       d10client:
         condition: service_completed_successfully
       d10mongodb:
+        condition: service_healthy
+      traffic-nginx:
+        condition: service_healthy
+      d10webservice:
         condition: service_healthy
     ports:
         - target: 8080
@@ -139,12 +161,6 @@ services:
       context: ./deadline-web-app-backend
       dockerfile: Dockerfile
     container_name: deadline-web-app-backend
-    healthcheck:
-      test: curl -i http://0.0.0.0:1000 | exit 1
-      interval: 2s
-      retries: 20
-      start_period: 2s
-      timeout: 5s
     ports:
       - "1000:80"
     environment:
@@ -154,10 +170,12 @@ services:
     depends_on:
       d10webservice:
         condition: service_healthy
+      traffic-nginx:
+        condition: service_healthy
     networks:
       - net
     restart: always
-#
+
   deadline-web-app-frontend:
     build:
       context: deadline-web-app-frontend
@@ -174,6 +192,10 @@ services:
     depends_on:
       d10webservice:
         condition: service_healthy
+      traffic-nginx:
+        condition: service_healthy
+      deadline-web-app-backend:
+        condition: service_started
     ports:
       - "2000:80"
     networks:
