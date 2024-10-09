@@ -1,5 +1,8 @@
-### Deadline 10 Docker Containers - Unofficial - Not for production use - For testing purposes only / Beware of the Gremlins
+# Deadline 10 Docker Containers - Unofficial - Developer setup
+
 ![deadline_container.png](deadline_container.png)
+### Not for production use - For testing purposes only / Beware of the Gremlins
+
 
 ### Description
 This repo contains all necessary files to build and run Deadline 10 docker containers with different services.
@@ -18,17 +21,17 @@ This repo contains all necessary files to build and run Deadline 10 docker conta
 - Deadline Monitor WebUI App Backend - 1 container, standard Deadline Monitor Backend app setup
 - Deadline Worker - 1 container, launched from separate docker-compose.worker.yml file, standard Deadline Worker no gui setup
 
+
 ### How to run
 Clone the repo and download the Deadline installer from the official website. Place the installer in the install directory of the project. 
-Edit the setup sh files to match your deadline version you are installing (TODO: add env var vor deadline versions). 
-
-Edit the install/connetion.ini file to match your MongoDB connection string.
-Edit the install/deadline.ini file to match your Deadline setup.
+- Edit the setup sh files to match your deadline version you are installing (TODO: add env var vor deadline versions).
+- Edit the install/connetion.ini file to match your MongoDB connection string.
+- Edit the install/deadline.ini file to match your Deadline setup.
 
 Then run `docker-compose up` in the root directory of the project.
 After containers stabilize, open Deadline Monitor and disable Webservice password in the Repository settings for the web app services to work.
 
-You can disable parts you dont need in the docker-compose.yml file. Feel free to copy and or edit the compose file to fit your specific needs.
+You can disable parts you dont need in the docker-compose.yml file. Feel free to copy and/or edit the compose file to fit your specific needs.
 
 ### Notes
 It can take a while to launch all containers and services, so be patient. Depending on your host RAM and CPU, it can take up to 10 minutes to install repository files and start all services.
@@ -42,6 +45,9 @@ Containers have dependencies, so they will be started in the following order:
 6. Monitor WebUI App Backend and Frontend
 7. Separate Deadline worker-slave container - launch from docker-compose.worker.yml
 ```
+
+### Errors and issues debugging
+
 Deadline Webservice container open file desriptors error - inotify error: If you get an error like this then set your host limits to a higher value:
 Check your host machine ulimits and set them higher. Use the following snippet which was tested OK on ubuntu systems.
 Execute the following commands in the terminal of the host machine where docker compose runs:
@@ -56,5 +62,7 @@ Add this entry to your hosts file:
 127.0.0.1       d10mongodb d10client d10rcs d10repo d10webservice deadline-web-app-backend deadline-web-app-frontend
 ```
 
+You can set a nginx instance to route the traffic to the Deadline Webservice and Deadline Monitor WebUI.
 
-You can set a nginx instace to route the traffic to the Deadline Webservice and Deadline Monitor WebUI.
+
+### If you find any bugs or a better setup solution please open an issue or a pull request and we can discus the changes and merge them.
