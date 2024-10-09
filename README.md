@@ -4,8 +4,23 @@
 ### Not for production use - For testing purposes only / Beware of the Gremlins
 
 
-### Description
+### Quick Info
 This repo contains all necessary files to build and run Deadline 10 docker containers with different services.
+It builds the stack from the linux Deadline installer and runs the services in separate containers.
+
+Download the installer either manualy or run `make downoload` in the root of the repo
+
+Additionaly you can clone the web ui setup from https://github.com/BreakTools/deadline-web-app-frontend and https://github.com/BreakTools/deadline-web-app-backend .
+To setup those, run the following commands in the root directory of the project `make webapp`
+
+After this is ready run `make dev` and the stack will be up and running.
+
+To rebuild the repo delete files and folders in the repository folder and run `make dev` again.
+The installer containers will check if the files are present and rebuild if necessary on the next run.
+Use `make webclean` to remove webui files including the database and docker caches ( it runs docker system prune -af)
+
+Please check the code if it fits your setup and change the deadline ini files accordigly.
+
 
 ### Containers
 - Deadline Nginx - Traffic - 1 container, port 80, 443, standard setup, brin your own certs
