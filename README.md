@@ -15,6 +15,8 @@ To setup those, run the following commands in the root directory of the project 
 
 After this is ready run `make dev` and the stack will be up and running.
 
+To include your custom plugins in the repo, copy your plugins to the deadline_custom folder respecting the original deadline folder structure and run `make sync` and those will be moved inside the repository custom plugins folder.
+
 To rebuild the repo delete files and folders in the repository folder and run `make dev` again.
 The installer containers will check if the files are present and rebuild if necessary on the next run.
 Use `make webclean` to remove webui files including the database and docker caches ( it runs docker system prune -af)

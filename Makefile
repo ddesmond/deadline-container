@@ -23,3 +23,8 @@ webapp:
 
 download:
 	sh install/download_deadline.sh
+
+
+make sync:
+	@echo "Syncing custom plugins"
+	@mv deadline_custom/* repository/repository/custom/
