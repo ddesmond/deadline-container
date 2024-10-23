@@ -1,7 +1,7 @@
 #!/bin/sh
 # run pre_install.sh script
 
-ulimit -n unlimited
+# ulimit -n unlimited
 
 echo "----------------------------------------------------"
 echo "Checking up: Deadline10 Repository"

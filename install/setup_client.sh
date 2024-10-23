@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ulimit -n unlimited
+# ulimit -n unlimited
 
 installers=/tmp/deadline10_installers
 destination=/opt/Thinkbox/Deadline10
