@@ -1,7 +1,7 @@
 ### deadline container make file v1.0.0
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: setup
+
 
 dev: # Start Deadline containers
 	mkdir -p db repository
@@ -33,7 +33,7 @@ make sync: # Sync Deadline plugins
 	@echo "Syncing custom plugins"
 	@mv deadline_custom/* repository/repository/custom/
 
-make all: ## Run all commands to start the Deadline containers
+make all: ## Download Deadline, Clone Webapp, and Run all commands to start the Deadline containers
 	make download
 	make webapp
 	make dev
