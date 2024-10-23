@@ -88,7 +88,7 @@ Add this entry to your hosts file:
 
 You can set a nginx instance to route the traffic to the Deadline Webservice and Deadline Monitor WebUI. This is not setup per defaults.
 
-#### Deadline Monitor WebUI App OpenAI APi Key
+### Deadline Monitor WebUI App OpenAI APi Key
 You will need to provide your own OpenAI API key to use the Deadline Monitor WebUI App. You can get one from the OpenAI website.
 
 ### If you find any bugs or a better setup solution please open an issue or a pull request and we can discus the changes and merge them.
