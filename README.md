@@ -1,6 +1,5 @@
 # Deadline 10 Docker Containers - Unofficial - Developer setup
-
-![deadline_container.png](deadline_container.png)
+<img src="assets/deadline_container.png">
 ### Not for production use - For testing purposes only / Beware of the Gremlins
 
 
@@ -12,6 +11,10 @@ Download the installer either manualy or run `make downoload` in the root of the
 
 Additionaly you can clone the web ui setup from https://github.com/BreakTools/deadline-web-app-frontend and https://github.com/BreakTools/deadline-web-app-backend .
 To setup those, run the following commands in the root directory of the project `make webapp`
+
+<img src="assets/webapp.png" width=75%>
+
+The WEBUI is accesible at http://localhost:2000 or http://0.0.0.0:2000 - no nginx routing is setup per defaults.
 
 After this is ready run `make dev` and the stack will be up and running.
 
@@ -72,6 +75,10 @@ Execute the following commands in the terminal of the host machine where docker 
 echo fs.inotify.max_user_instances=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 ```
 
+### Deadline Monitor Webservice Settings
+<img src="assets/webservice-settings.png" width=85%>
+
+
 The Deadline webservice needs no password set in the Repository settings to make connections and request work.
 Point your Deadline Monitor to the installed Deadline Repository.
 Add this entry to your hosts file:
@@ -79,7 +86,7 @@ Add this entry to your hosts file:
 127.0.0.1       d10mongodb d10client d10rcs d10repo d10webservice deadline-web-app-backend deadline-web-app-frontend
 ```
 
-You can set a nginx instance to route the traffic to the Deadline Webservice and Deadline Monitor WebUI.
+You can set a nginx instance to route the traffic to the Deadline Webservice and Deadline Monitor WebUI. This is not setup per defaults.
 
 
 ### If you find any bugs or a better setup solution please open an issue or a pull request and we can discus the changes and merge them.
