@@ -1,0 +1,213 @@
+services:
+  traffic-nginx:
+    image: 'docker.io/jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    container_name: d10-nginx
+    healthcheck:
+      test: [ "CMD", "/usr/bin/check-health" ]
+      interval: 10s
+      timeout: 3s
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - net
+
+  d10mongodb:
+    image: mongo:5.0.1
+    container_name: d10-mongodb
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+    ports:
+        - target: 27017
+          published: 27017
+          protocol: tcp
+          mode: host
+    networks:
+      - net
+    volumes:
+      - './db:/data/db'
+    restart: always
+#
+  d10repo:
+    build:
+      context: repository
+    image: mono:latest
+    container_name: d10-repo
+    depends_on:
+      d10mongodb:
+        condition: service_healthy
+    networks:
+      - net
+    volumes:
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
+    restart: no
+    command: sh /opt/setup/setup_deadline.sh
+
+  d10client:
+    build:
+      context: repository
+    image: mono:latest
+    container_name: d10-client
+    depends_on:
+      d10repo:
+        condition: service_completed_successfully
+      d10mongodb:
+        condition: service_healthy
+    networks:
+      - net
+    volumes:
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
+    restart: no
+    command: sh /opt/setup/setup_client.sh
+
+  d10webservice:
+    build:
+      context: client
+    image: mono:latest
+    container_name: d10-webservice
+    healthcheck:
+      test: curl -i http://0.0.0.0:8081 || exit 1
+      interval: 2s
+      retries: 20
+      start_period: 2s
+      timeout: 5s
+    depends_on:
+      d10repo:
+        condition: service_completed_successfully
+      d10client:
+        condition: service_completed_successfully
+      d10mongodb:
+        condition: service_healthy
+    ports:
+        - target: 8081
+          published: 8081
+          protocol: tcp
+          mode: host
+    networks:
+      - net
+    volumes:
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
+      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+    restart: always
+    command: sh /opt/setup/run_webservice.sh
+#
+  d10rcs:
+    build:
+      context: client
+    image: mono:latest
+    container_name: d10-rcs
+    healthcheck:
+      test: curl -i http://0.0.0.0:8080 || exit 1
+      interval: 2s
+      retries: 20
+      start_period: 2s
+      timeout: 5s
+    depends_on:
+      d10repo:
+        condition: service_completed_successfully
+      d10client:
+        condition: service_completed_successfully
+      d10mongodb:
+        condition: service_healthy
+      traffic-nginx:
+        condition: service_healthy
+      d10webservice:
+        condition: service_healthy
+    ports:
+        - target: 8080
+          published: 8080
+          protocol: tcp
+          mode: host
+    networks:
+      - net
+    volumes:
+      - type: bind
+        source: ./install
+        target: /opt/setup/
+      - type: bind
+        source: ./repository
+        target: /deadline10/
+      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+    restart: always
+    command: sh /opt/setup/run_rcsservice.sh
+
+  deadline-web-app-backend:
+    build:
+      context: ./deadline-web-app-backend
+      dockerfile: Dockerfile
+    container_name: deadline-web-app-backend
+    ports:
+      - "1000:80"
+    environment:
+      OPENAI_API_KEY: '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'
+      WEB_SERVICE_IP: d10webservice
+      WEB_SERVICE_PORT: 8081
+    depends_on:
+      d10webservice:
+        condition: service_healthy
+      traffic-nginx:
+        condition: service_healthy
+    networks:
+      - net
+    restart: always
+
+  deadline-web-app-frontend:
+    build:
+      context: deadline-web-app-frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_BACKEND_URL: http://deadline-web-app-backend:1000
+    container_name: deadline-web-app-frontend
+    healthcheck:
+      test: curl -i http://localhost:2000 || exit 1
+      interval: 2s
+      retries: 20
+      start_period: 2s
+      timeout: 5s
+    depends_on:
+      d10webservice:
+        condition: service_healthy
+      traffic-nginx:
+        condition: service_healthy
+      deadline-web-app-backend:
+        condition: service_started
+    ports:
+      - "2000:80"
+    networks:
+      - net
+    restart: always
+
+networks:
+  net:
+    internal: false
+    driver: bridge
+    attachable: true
+
+volumes:
+  repository:
+  db:
