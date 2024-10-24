@@ -1,33 +1,36 @@
 # Deadline 10 Docker Containers - Unofficial - Developer setup
 <img src="assets/deadline_container.png">
-### Not for production use - For testing purposes only / Beware of the Gremlins
 
+### Not for production use - For testing purposes only - Beware of the Gremlins
 
-### Quick Info
+<br>
+
+## Quick Info
 This repo contains all necessary files to build and run Deadline 10 docker containers with different services.
 It builds the stack from the linux Deadline installer and runs the services in separate containers.
 
-Download the installer either manualy or run `make downoload` in the root of the repo
+> Download the installer either manualy or run `make downoload` in the root of the repo
 
 Additionaly you can clone the web ui setup from https://github.com/BreakTools/deadline-web-app-frontend and https://github.com/BreakTools/deadline-web-app-backend .
 To setup those, run the following commands in the root directory of the project `make webapp`
 
 <img src="assets/webapp.png" width=75%>
 
-The WEBUI is accesible at http://localhost:2000 or http://0.0.0.0:2000 - no nginx routing is setup per defaults.
+The WEBUI is accesible at http://localhost:2000 or http://0.0.0.0:2000  after the stack has been launched and settled - no nginx routing is setup per defaults.
 
-After this is ready run `make dev` and the stack will be up and running.
+After getting the webapp - it is ready to run `make dev` and the stack will be up and running.
 
-To include your custom plugins in the repo, copy your plugins to the deadline_custom folder respecting the original deadline folder structure and run `make sync` and those will be moved inside the repository custom plugins folder.
+> To include your custom plugins in the repo, copy your plugins to the deadline_custom folder respecting the original deadline folder structure and run `make sync` and those will be moved inside the repository custom plugins folder.
 
-To rebuild the repo delete files and folders in the repository folder and run `make dev` again.
+To rebuild the repo, delete files and folders in the repository folder and run `make dev` again.
 The installer containers will check if the files are present and rebuild if necessary on the next run.
 Use `make webclean` to remove webui files including the database and docker caches ( it runs docker system prune -af)
 
-Please check the code if it fits your setup and change the deadline ini files accordigly.
+> Please check the code if it fits your setup and change the deadline ini files accordigly.
 
+---
 
-### Containers
+## Containers
 - Deadline Nginx - Traffic - 1 container, port 80, 443, standard setup, brin your own certs
 - Deadline MongDB - 1 container, port 27017, standard MongoDB setup, v 5.0.1
 - Deadline Repository installer - 1 container, standard Deadline setup, no ssl
@@ -41,14 +44,16 @@ Please check the code if it fits your setup and change the deadline ini files ac
 - Deadline Monitor WebUI App Backend - 1 container, standard Deadline Monitor Backend app setup
 - Deadline Worker - 1 container, launched from separate docker-compose.worker.yml file, standard Deadline Worker no gui setup
 
+<br>
 
-### How to run
+--- 
+## How to run
 Clone the repo and download the Deadline installer from the official website. Place the installer in the install directory of the project. 
 - Edit the setup sh files to match your deadline version you are installing (TODO: add env var vor deadline versions).
 - Edit the install/connetion.ini file to match your MongoDB connection string.
 - Edit the install/deadline.ini file to match your Deadline setup.
 
-Then run `docker-compose up` in the root directory of the project.
+Run `docker compose up` in the root directory of the project.
 After containers stabilize, open Deadline Monitor and disable Webservice password in the Repository settings for the web app services to work.
 
 You can disable parts you dont need in the docker-compose.yml file. Feel free to copy and/or edit the compose file to fit your specific needs.
@@ -66,19 +71,29 @@ Containers have dependencies, so they will be started in the following order:
 7. Separate Deadline worker-slave container - launch from docker-compose.worker.yml
 ```
 
-### Errors and issues debugging
+--- 
 
-Deadline Webservice container open file desriptors error - inotify error: If you get an error like this then set your host limits to a higher value:
-Check your host machine ulimits and set them higher. Use the following snippet which was tested OK on ubuntu systems.
+<br>
+
+## Errors, issues, debugging
+
+> Deadline Webservice container open file desriptors error - inotify error <br>
+
+If you get an error like this then set your host ulimits to a higher value:
+> Check your host machine ulimits and set them higher. Use the following snippet which was tested OK on ubuntu systems.
 Execute the following commands in the terminal of the host machine where docker compose runs:
 ```bash
 echo fs.inotify.max_user_instances=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 ```
 
+<br>
+<br>
+
 ### Deadline Monitor Webservice Settings
+
 <img src="assets/webservice-settings.png" width=85%>
 
-
+This is needed for the Deadline Monitor WebUI App to work.
 The Deadline webservice needs no password set in the Repository settings to make connections and request work.
 Point your Deadline Monitor to the installed Deadline Repository.
 Add this entry to your hosts file:
