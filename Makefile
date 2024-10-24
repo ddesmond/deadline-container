@@ -3,37 +3,37 @@
 
 
 
-dev: # Start Deadline containers
+dev: ## Start Deadline containers
 	mkdir -p db repository
 	docker compose up
 
-setup: # Setup Deadline containers host
+setup: ## Setup Deadline containers host
 	sh setup.host.sh
 
-down: # Stop Deadline containers
+down: ## Stop Deadline containers
 	docker compose down
 
-repoclean: # Clean Repository and Client files
+repoclean: ## Clean Repository and Client files
 	sudo rm -rf ./repository/client
 	sudo rm -rf ./repository/repository
 
-webclean: # Clean Deadline Web App
+webclean: ## Clean Deadline Web App files
 	docker compose down --volumes --remove-orphans
 	docker system prune -af
 	sudo rm -rf ./db/*
 	sudo rm -rf ./deadline-web-app*
 
-webapp: # Download - Install Deadline Web App
+webapp: ## Download - Install Deadline Web App
 	sh install/setup_deadline-web-app.sh
 
-download: # Download Deadline installer
+download: ## Download Deadline installer
 	sh install/download_deadline.sh
 
-make sync: # Sync Deadline plugins
+sync: ## Sync Deadline plugins
 	@echo "Syncing custom plugins"
 	@mv deadline_custom/* repository/repository/custom/
 
-make all: ## Download Deadline, Clone Webapp, and Run all commands to start the Deadline containers
+all: ## Download Deadline, Clone Webapp, and Run all commands to start the Deadline containers
 	make download
 	make webapp
 	make dev
