@@ -16,15 +16,15 @@ down: ## Stop Deadline containers
 download: ## Check for Deadline installer tarball
 	sh install/download_deadline.sh
 
-repoclean: ## Clean Repository and Client files
-	sudo rm -rf ./repository/repository
-	sudo rm -rf ./client
+repoclean: ## Clean installed repository and client files (keeps placeholders)
+	find ./repository -mindepth 1 -not -name '.deadlinerepo' -delete 2>/dev/null || true
+	find ./client -mindepth 1 -delete 2>/dev/null || true
 
-clean: ## Stop containers, remove volumes and DB files
+clean: ## Stop containers, remove named volumes, DB and installed files
 	docker compose down --volumes --remove-orphans
 	sudo rm -rf ./db/*
-	sudo rm -rf ./repository/repository
-	sudo rm -rf ./client
+	find ./repository -mindepth 1 -not -name '.deadlinerepo' -delete 2>/dev/null || true
+	find ./client -mindepth 1 -delete 2>/dev/null || true
 
 sync: ## Sync custom Deadline plugins into the repository
 	@echo "Syncing custom plugins"
