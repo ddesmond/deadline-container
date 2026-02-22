@@ -6,6 +6,7 @@ set -e
 export DEADLINE_PATH=/deadline10/client
 
 binary=/deadline10/client/bin/deadlinewebservice.exe
+sentinel=/deadline10/repository/settings/connection.ini
 timeout=300
 elapsed=0
 interval=5
@@ -20,6 +21,21 @@ while [ ! -f "$binary" ]; do
     exit 1
   fi
   echo "Waiting for $binary ... (${elapsed}s/${timeout}s)"
+  sleep "$interval"
+  elapsed=$((elapsed + interval))
+done
+
+echo "----------------------------------------------------"
+echo "Waiting for Deadline Repository installation"
+echo "----------------------------------------------------"
+
+elapsed=0
+while [ ! -f "$sentinel" ]; do
+  if [ "$elapsed" -ge "$timeout" ]; then
+    echo "ERROR: Repository not ready after ${timeout}s. Exiting."
+    exit 1
+  fi
+  echo "Waiting for repository sentinel ... (${elapsed}s/${timeout}s)"
   sleep "$interval"
   elapsed=$((elapsed + interval))
 done

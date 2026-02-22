@@ -24,6 +24,8 @@ services:
     image: ubuntu:24.04
     platform: linux/amd64
     container_name: d10-repo
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       d10mongodb:
         condition: service_healthy
@@ -48,13 +50,15 @@ services:
     image: ubuntu:24.04
     platform: linux/amd64
     container_name: d10-webservice
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ulimits:
       nproc: 65535
       nofile:
         soft: 20000
         hard: 40000
     healthcheck:
-      test: curl -i http://0.0.0.0:8081 || exit 1
+      test: bash -c 'echo > /dev/tcp/0.0.0.0/8081' || exit 1
       interval: 10s
       retries: 30
       start_period: 30s
@@ -79,7 +83,9 @@ services:
       - type: bind
         source: ./client
         target: /deadline10/client
-      - './install/deadline-webservice.ini:/root/Thinkbox/Deadline10/deadline.ini'
+      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+    environment:
+      DOTNET_EnableWriteXorExecute: "0"
     restart: always
     command: sh /opt/setup/run_webservice.sh
 
@@ -87,13 +93,15 @@ services:
     image: ubuntu:24.04
     platform: linux/amd64
     container_name: d10-rcs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ulimits:
       nproc: 65535
       nofile:
         soft: 20000
         hard: 40000
     healthcheck:
-      test: curl -i http://0.0.0.0:8080 || exit 1
+      test: bash -c 'echo > /dev/tcp/0.0.0.0/8080' || exit 1
       interval: 10s
       retries: 30
       start_period: 30s
@@ -120,7 +128,9 @@ services:
       - type: bind
         source: ./client
         target: /deadline10/client
-      - './install/deadline-rcs.ini:/root/Thinkbox/Deadline10/deadline.ini'
+      - './install/deadline-rcs.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+    environment:
+      DOTNET_EnableWriteXorExecute: "0"
     restart: always
     command: sh /opt/setup/run_rcsservice.sh
 
