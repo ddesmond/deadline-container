@@ -11,8 +11,8 @@ __pycache__/
 # Distribution / packaging
 .Python
 .idea/
-repository/client*
 repository/repository*
+client/
 db/
 deadline-web-app/
 deadline-web-app-frontend/
@@ -86,6 +86,12 @@ celerybeat-schedule
 
 # dotenv
 .env
+
+# Deadline installer tarballs
+install/Deadline*.tar
+
+# Pre-extracted Deadline installers
+install/d10instalers/
 
 # virtualenv
 venv/
