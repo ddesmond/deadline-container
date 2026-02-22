@@ -7,7 +7,8 @@ export DEADLINE_PATH=/deadline10/client
 
 binary=/deadline10/client/bin/deadlinewebservice.exe
 sentinel=/deadline10/repository/settings/connection.ini
-timeout=300
+deadlineini=/root/Thinkbox/Deadline10/deadline.ini
+timeout=1800
 elapsed=0
 interval=5
 
@@ -36,6 +37,21 @@ while [ ! -f "$sentinel" ]; do
     exit 1
   fi
   echo "Waiting for repository sentinel ... (${elapsed}s/${timeout}s)"
+  sleep "$interval"
+  elapsed=$((elapsed + interval))
+done
+
+echo "----------------------------------------------------"
+echo "Waiting for deadline.ini"
+echo "----------------------------------------------------"
+
+elapsed=0
+while [ ! -f "$deadlineini" ]; do
+  if [ "$elapsed" -ge "$timeout" ]; then
+    echo "ERROR: $deadlineini not found after ${timeout}s. Exiting."
+    exit 1
+  fi
+  echo "Waiting for $deadlineini ... (${elapsed}s/${timeout}s)"
   sleep "$interval"
   elapsed=$((elapsed + interval))
 done

@@ -41,6 +41,12 @@ services:
       - type: bind
         source: ./client
         target: /deadline10/client
+      - type: volume
+        source: thinkbox
+        target: /var/lib/Thinkbox
+      - type: volume
+        source: root-thinkbox
+        target: /root/Thinkbox
     environment:
       DEADLINE_VERSION: ${DEADLINE_VERSION}
     restart: no
@@ -83,7 +89,12 @@ services:
       - type: bind
         source: ./client
         target: /deadline10/client
-      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+      - type: volume
+        source: thinkbox
+        target: /var/lib/Thinkbox
+      - type: volume
+        source: root-thinkbox
+        target: /root/Thinkbox
     environment:
       DOTNET_EnableWriteXorExecute: "0"
     restart: always
@@ -128,7 +139,12 @@ services:
       - type: bind
         source: ./client
         target: /deadline10/client
-      - './install/deadline-rcs.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+      - type: volume
+        source: thinkbox
+        target: /var/lib/Thinkbox
+      - type: volume
+        source: root-thinkbox
+        target: /root/Thinkbox
     environment:
       DOTNET_EnableWriteXorExecute: "0"
     restart: always
@@ -139,3 +155,7 @@ networks:
     internal: false
     driver: bridge
     attachable: true
+
+volumes:
+  thinkbox:
+  root-thinkbox:
