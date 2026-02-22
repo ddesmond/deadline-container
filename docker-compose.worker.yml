@@ -2,7 +2,8 @@ services:
   d10worker:
     build:
       context: repository
-    image: mono:latest
+    image: ubuntu:24.04
+    platform: linux/amd64
     container_name: d10-worker
     networks:
       - net
@@ -13,7 +14,7 @@ services:
       - type: bind
         source: ./repository
         target: /deadline10/
-      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+      - './install/deadline.ini:/root/Thinkbox/Deadline10/deadline.ini'
     restart: on-failure
     command: sh /opt/setup/run_worker.sh
 
