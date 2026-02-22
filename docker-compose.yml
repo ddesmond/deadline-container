@@ -21,7 +21,7 @@ services:
     restart: always
 
   d10repo:
-    image: mono:latest
+    image: ubuntu:24.04
     platform: linux/amd64
     container_name: d10-repo
     depends_on:
@@ -45,7 +45,7 @@ services:
     command: sh /opt/setup/setup_deadline.sh
 
   d10webservice:
-    image: mono:latest
+    image: ubuntu:24.04
     platform: linux/amd64
     container_name: d10-webservice
     ulimits:
@@ -79,12 +79,12 @@ services:
       - type: bind
         source: ./client
         target: /deadline10/client
-      - './install/deadline-webservice.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+      - './install/deadline-webservice.ini:/root/Thinkbox/Deadline10/deadline.ini'
     restart: always
     command: sh /opt/setup/run_webservice.sh
 
   d10rcs:
-    image: mono:latest
+    image: ubuntu:24.04
     platform: linux/amd64
     container_name: d10-rcs
     ulimits:
@@ -120,7 +120,7 @@ services:
       - type: bind
         source: ./client
         target: /deadline10/client
-      - './install/deadline-rcs.ini:/var/lib/Thinkbox/Deadline10/deadline.ini'
+      - './install/deadline-rcs.ini:/root/Thinkbox/Deadline10/deadline.ini'
     restart: always
     command: sh /opt/setup/run_rcsservice.sh
 
