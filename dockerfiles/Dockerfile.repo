@@ -1,0 +1,13 @@
+# syntax=docker/dockerfile:1
+FROM --platform=linux/amd64 ubuntu:24.04
+
+# Pre-bake all apt dependencies for the repository installer
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      wget unzip curl bzip2 libstdc++6 libgomp1 file && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy setup scripts and config into the image
+COPY install/ /opt/setup/
+
+CMD ["sh", "/opt/setup/setup_deadline.sh"]

@@ -21,7 +21,7 @@ services:
     restart: always
 
   d10repo:
-    image: ubuntu:24.04
+    image: registry.recomblacksmith.com/deadline10-repo:${DEADLINE_VERSION}
     platform: linux/amd64
     container_name: d10-repo
     extra_hosts:
@@ -38,9 +38,6 @@ services:
       - type: bind
         source: ./repository
         target: /deadline10/repository
-      - type: bind
-        source: ./client
-        target: /deadline10/client
       - type: volume
         source: thinkbox
         target: /var/lib/Thinkbox
@@ -53,7 +50,7 @@ services:
     command: sh /opt/setup/setup_deadline.sh
 
   d10webservice:
-    image: ubuntu:24.04
+    image: registry.recomblacksmith.com/deadline10-webservice:${DEADLINE_VERSION}
     platform: linux/amd64
     container_name: d10-webservice
     extra_hosts:
@@ -101,7 +98,7 @@ services:
     command: sh /opt/setup/run_webservice.sh
 
   d10rcs:
-    image: ubuntu:24.04
+    image: registry.recomblacksmith.com/deadline10-rcs:${DEADLINE_VERSION}
     platform: linux/amd64
     container_name: d10-rcs
     extra_hosts:

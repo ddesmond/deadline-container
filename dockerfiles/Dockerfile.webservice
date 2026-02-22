@@ -1,0 +1,38 @@
+# syntax=docker/dockerfile:1
+FROM --platform=linux/amd64 ubuntu:24.04
+
+ARG DEADLINE_VERSION
+
+# Pre-bake apt dependencies
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      libstdc++6 libgomp1 file && \
+    rm -rf /var/lib/apt/lists/*
+
+# Bake the client install (RCS + webservice) at build time using a BuildKit
+# bind-mount so the installer binaries are NOT stored in the image layer.
+RUN --mount=type=bind,source=install/d10instalers,target=/installers \
+    mkdir -p /deadline10/client && \
+    /installers/Deadline-${DEADLINE_VERSION}-linux-installers/DeadlineClient-${DEADLINE_VERSION}-linux-x64-installer.run \
+      --debuglevel 4 \
+      --mode unattended \
+      --prefix /deadline10/client \
+      --enable-components proxyconfig,webservice_config \
+      --connectiontype Direct \
+      --repositorydir /deadline10/repository \
+      --noguimode true \
+      --slavestartup false \
+      --blockautoupdateoverride Blocked \
+      --launcherdaemon false \
+      --connserveruser root \
+      --httpport 8080 \
+      --enabletls false \
+      --webserviceuser root \
+      --webservice_httpport 8081 \
+      --webservice_enabletls false && \
+    chmod -R 777 /deadline10/client
+
+# Copy setup scripts and config into the image
+COPY install/ /opt/setup/
+
+CMD ["sh", "/opt/setup/run_webservice.sh"]

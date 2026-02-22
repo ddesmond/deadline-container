@@ -1,6 +1,6 @@
 services:
   d10worker:
-    image: ubuntu:24.04
+    image: registry.recomblacksmith.com/deadline10-worker:${DEADLINE_VERSION}
     platform: linux/amd64
     container_name: d10-worker
     extra_hosts:
@@ -20,7 +20,7 @@ services:
         source: ./repository
         target: /deadline10/repository
       - type: bind
-        source: ./client
+        source: ./worker-client
         target: /deadline10/client
       - type: volume
         source: thinkbox
@@ -28,11 +28,9 @@ services:
       - type: volume
         source: root-thinkbox
         target: /root/Thinkbox
-      - type: bind
-        source: ./install/deadline.ini
-        target: /root/Thinkbox/Deadline10/deadline.ini
     environment:
       DOTNET_EnableWriteXorExecute: "0"
+      DEADLINE_VERSION: ${DEADLINE_VERSION}
     restart: on-failure
     command: sh /opt/setup/run_worker.sh
 

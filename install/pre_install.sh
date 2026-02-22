@@ -4,4 +4,4 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
-apt-get install -y wget unzip curl bzip2 libstdc++6
+apt-get install -y wget unzip curl bzip2 libstdc++6 libgomp1 file
