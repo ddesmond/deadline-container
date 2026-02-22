@@ -60,8 +60,6 @@ services:
       start_period: 30s
       timeout: 5s
     depends_on:
-      d10repo:
-        condition: service_completed_successfully
       d10mongodb:
         condition: service_healthy
     ports:
@@ -101,8 +99,6 @@ services:
       start_period: 30s
       timeout: 5s
     depends_on:
-      d10repo:
-        condition: service_completed_successfully
       d10mongodb:
         condition: service_healthy
       d10webservice:
