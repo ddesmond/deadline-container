@@ -1,10 +1,10 @@
-### deadline container make file v1.0.0
+### deadline container make file v2.0.0
 .EXPORT_ALL_VARIABLES:
 
-
+-include .env
 
 dev: ## Start Deadline containers
-	mkdir -p db repository
+	mkdir -p db repository client
 	docker compose up
 
 setup: ## Setup Deadline containers host
@@ -13,31 +13,26 @@ setup: ## Setup Deadline containers host
 down: ## Stop Deadline containers
 	docker compose down
 
-repoclean: ## Clean Repository and Client files
-	sudo rm -rf ./repository/client
-	sudo rm -rf ./repository/repository
-
-webclean: ## Clean Deadline Web App files
-	docker compose down --volumes --remove-orphans
-	docker system prune -af
-	sudo rm -rf ./db/*
-	sudo rm -rf ./deadline-web-app*
-
-webapp: ## Download - Install Deadline Web App
-	sh install/setup_deadline-web-app.sh
-
-download: ## Download Deadline installer
+download: ## Check for Deadline installer tarball
 	sh install/download_deadline.sh
 
-sync: ## Sync Deadline plugins
+repoclean: ## Clean Repository and Client files
+	sudo rm -rf ./repository/repository
+	sudo rm -rf ./client
+
+clean: ## Stop containers, remove volumes and DB files
+	docker compose down --volumes --remove-orphans
+	sudo rm -rf ./db/*
+	sudo rm -rf ./repository/repository
+	sudo rm -rf ./client
+
+sync: ## Sync custom Deadline plugins into the repository
 	@echo "Syncing custom plugins"
 	@mv deadline_custom/* repository/repository/custom/
 
-all: ## Download Deadline, Clone Webapp, and Run all commands to start the Deadline containers
+all: ## Check installer and start all Deadline containers
 	make download
-	make webapp
 	make dev
-
 
 # help
 help: ## Display this help screen

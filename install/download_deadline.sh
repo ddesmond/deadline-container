@@ -1,11 +1,21 @@
 #!/bin/sh
-workdir=$(pwd)
+set -e
 
-link="https://thinkbox-installers.s3.us-west-2.amazonaws.com/Releases/Deadline/10.3/7_10.3.2.1/Deadline-10.3.2.1-linux-installers.tar"
+tarball="install/Deadline-${DEADLINE_VERSION:-10.4.2.3}-linux-installers.tar"
 
-echo "Downloading Deadline installer"
-# download the installer
-wget -O install/Deadline.tar $link
-# permissions
-chmod +x install/Deadline.tar
-echo "Downloaded Deadline installer."
+if [ -f "$tarball" ]; then
+  echo "Deadline installer already present: $tarball"
+  exit 0
+fi
+
+echo "----------------------------------------------------"
+echo "Deadline installer not found."
+echo "----------------------------------------------------"
+echo ""
+echo "Download the Deadline ${DEADLINE_VERSION:-10.4.2.3} Linux installer from"
+echo "the AWS Thinkbox website and place it at:"
+echo ""
+echo "  $tarball"
+echo ""
+echo "Then run 'make dev' to start the stack."
+exit 1

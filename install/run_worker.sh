@@ -1,16 +1,32 @@
-
 #!/bin/sh
-# run pre_install.sh script
+set -e
+
+ulimit -n unlimited
 
 export DEADLINE_PATH=/deadline10/client
 
-if [ -f /deadline10/client/bin/deadlineworker.exe ]; then
-  cd /deadline10/client/bin
-  echo "Deadline10 deadlineworker is Starting"
-  /deadline10/client/bin/deadlineworker.exe -nogui
-else
-  # permissions
-  echo "Waiting deployment of Deadline Client and deadlineworker Files"
-  sleep 10
-fi
+binary=/deadline10/client/bin/deadlineworker.exe
+timeout=300
+elapsed=0
+interval=5
 
+echo "----------------------------------------------------"
+echo "Waiting for Deadline Worker binary"
+echo "----------------------------------------------------"
+
+while [ ! -f "$binary" ]; do
+  if [ "$elapsed" -ge "$timeout" ]; then
+    echo "ERROR: $binary not found after ${timeout}s. Exiting."
+    exit 1
+  fi
+  echo "Waiting for $binary ... (${elapsed}s/${timeout}s)"
+  sleep "$interval"
+  elapsed=$((elapsed + interval))
+done
+
+echo "----------------------------------------------------"
+echo "Deadline 10 Worker is starting"
+echo "----------------------------------------------------"
+
+cd /deadline10/client/bin
+exec "$binary" -nogui
